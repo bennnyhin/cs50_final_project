@@ -5,7 +5,20 @@
 {% endblock %}
 
 {% block main %}
-    <h1>
-        Lenovo Web Scraper
-    </h1>
+    <table class="table table-striped">
+        <tr>
+            <th>Product</th>
+            <th>Old Price</th>
+            <th>Sale Price</th>
+            <th>Processor</th>
+        </tr>
+        {% for i in range(num_product) %}
+        <tr>
+            <td>{{ product_info["product"][i] }}</td>
+            <td>{{ product_info["old_price"][i] }}</td>
+            <td>{{ product_info["sale_price"][i] }}</td>
+            <td>{{ product_info["processor"][i] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
