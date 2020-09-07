@@ -1,9 +1,21 @@
-import sys
+import sys, atexit
 import sqlite3 as lite
 from flask_login import LoginManager, UserMixin
 from flask import Flask, redirect, render_template, request, session
+from apscheduler.schedulers.background import BackgroundScheduler
+
 # import functions for scraping the lenovo website
 import scrape
+
+# this function is called every day and added to the history table in the database
+def add_history():
+    print("hello world")
+
+
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_job(add_history, 'interval', seconds=3)
+scheduler.start()
+
 
 app = Flask(__name__)
 login_manage = LoginManager()
@@ -11,12 +23,6 @@ login_manage = LoginManager()
 
 #username just for testing
 username = "testing"
-
-# print(scrape.find_sale_price(page_soup))
-# print(scrape.find_processor_info(page_soup))
-# cur.execute("INSERT INTO users (username, password) VALUES ('asjdfkl', 'blah')")
-# con.commit()
-# con.close()
 
 
 @app.route("/")
@@ -33,7 +39,7 @@ def index():
         product_list.append(info[2])
         url_list.append(info[3])
 
-    #get all information on the products associated with user in database
+    #get all information on the products associated with user in database with information on website right now
     web_price_list = []
     sale_price_list = []
     processor_list = []
@@ -58,7 +64,7 @@ def index():
 @app.route("/history")
 def history():
     return render_template("history.html")
-
+    
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -90,6 +96,8 @@ def add_product():
 def apology():
     return render_template("apology.html")        
 
+
+atexit.register(lambda: scheduler.shutdown())
 
 if __name__ == "__main__":
     app.run()
