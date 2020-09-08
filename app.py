@@ -9,12 +9,37 @@ import scrape
 
 # this function is called every day and added to the history table in the database
 def add_history():
-    print("hello world")
+    con = lite.connect("information.db")
+    cur = con.cursor()
+    cur.execute("SELECT * FROM information WHERE username='%s'" % username)
+    information = cur.fetchall()
 
+    #create list of everything
+    url_list = []
+    product_list = []
+    for info in information:
+        product_list.append(info[2])
+        url_list.append(info[3])
 
-scheduler = BackgroundScheduler(daemon=True)
-scheduler.add_job(add_history, 'interval', seconds=3)
-scheduler.start()
+    #get all information on the products associated with user in database with information on website right now
+    web_price_list = []
+    sale_price_list = []
+    processor_list = []
+    for i in range(len(information)):
+        web_price_list.append(scrape.find_web_price(scrape.find_html(url_list[i])))
+        sale_price_list.append(scrape.find_sale_price(scrape.find_html(url_list[i])))
+        processor_list.append(scrape.find_processor_info(scrape.find_html(url_list[i])))
+
+    for j in range(len(information)):
+        cur.execute("INSERT INTO history (username, product, sale_price, web_price) VALUES (?, ?, ?,?);", (username, product_list[j], sale_price_list[j], web_price_list[j]))
+    con.commit()
+    con.close()
+    print("added to database")
+
+#scheduler for background functions
+# scheduler = BackgroundScheduler(daemon=True)
+# scheduler.add_job(add_history, 'interval', seconds=5)
+# scheduler.start()
 
 
 app = Flask(__name__)
