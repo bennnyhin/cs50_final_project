@@ -1,6 +1,5 @@
 import sys, atexit
 import sqlite3 as lite
-from flask_login import LoginManager, UserMixin
 from flask import Flask, redirect, render_template, request, session
 from apscheduler.schedulers.background import BackgroundScheduler
 
