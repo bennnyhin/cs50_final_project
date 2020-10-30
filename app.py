@@ -1,6 +1,4 @@
-import sys, atexit
 import sqlite3 as lite
-from flask_login import LoginManager, UserMixin
 from flask import Flask, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -38,7 +36,6 @@ def add_history():
         cur.execute("INSERT INTO history (username, product, sale_price, web_price) VALUES (?, ?, ?,?);", (username_global, product_list[j], sale_price_list[j], web_price_list[j]))
     con.commit()
     con.close()
-    print("added to database")
 
 
 app = Flask(__name__)
@@ -212,6 +209,7 @@ def logout():
 @app.route("/apology")
 def apology():
     return render_template("apology.html")        
+
 
 if __name__ == "__main__":
     app.run()
