@@ -8,4 +8,18 @@
     <h1>
         History
     </h1>
+    <table class="table table-striped">
+        <tr>
+            <th>Date</th>
+            <th>Product</th>
+            <th>Price</th>
+        </tr>
+        {% for i in range(num_history) %}
+        <tr>
+            <td>{{ history["date"][i] }}</td>
+            <td>{{ history["product"][i] }}</td>
+            <td>{{ history["price"][i] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
